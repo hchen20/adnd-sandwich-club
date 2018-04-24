@@ -2,29 +2,53 @@ package com.udacity.sandwichclub.utils;
 
 import com.udacity.sandwichclub.model.Sandwich;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JsonUtils {
 
     public static Sandwich parseSandwichJson(String json) {
-        Sandwich sandwich = new Sandwich();
+        Sandwich sSandwich = new Sandwich();
 
         try {
-            JSONObject sandwishJson = new JSONObject(json);
-            JSONObject sandwichName = sandwishJson.getJSONObject("name");
+            JSONObject sandwich = new JSONObject(json);
+            JSONObject sandwichName = sandwich.getJSONObject("name");
             String mainName = sandwichName.getString("mainName");
 
-            String orgin = sandwishJson.getString("placeOfOrigin");
-            String description = sandwishJson.getString("description");
+            String origin = sandwich.getString("placeOfOrigin");
+            String description = sandwich.getString("description");
+            String image = sandwich.getString("image");
+            JSONArray ingredients = sandwich.getJSONArray("ingredients");
+            JSONArray alsoKnownAs = sandwichName.getJSONArray("alsoKnownAs");
 
-            sandwich.setMainName(mainName);
-            sandwich.setPlaceOfOrigin(orgin);
-            sandwich.setDescription(description);
+
+
+
+            sSandwich.setMainName(mainName);
+            sSandwich.setPlaceOfOrigin(origin);
+            sSandwich.setDescription(description);
+            sSandwich.setImage(image);
+            sSandwich.setIngredients(getStringsFromJSON(ingredients));
+            sSandwich.setAlsoKnownAs(getStringsFromJSON(alsoKnownAs));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return sandwich;
+        return sSandwich;
+    }
+
+    private static List<String> getStringsFromJSON(JSONArray array) {
+        List<String> list = new ArrayList<String>();
+
+        int length = array.length();
+        for (int i=0; i<length; i++) {
+            list.add(array.optString(i));
+        }
+
+        return list;
     }
 }
